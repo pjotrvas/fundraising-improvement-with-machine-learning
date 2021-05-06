@@ -9,32 +9,54 @@ from sklearn.metrics import accuracy_score
 
 import seaborn as sns
 import matplotlib.pyplot as plt
+import streamlit as st
+
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
+st.write("""
+# Fundraising analiza 
+""")
+
 
 data=pd.read_csv('./dataset.csv')
 #print(data.head())
+#st.write(data.head())
+st.dataframe(data)
 
 data=data.dropna()
 #print(data.head())
 
-#data.boxplot('IZNOSI','KATEGORIJE',rot = 30,figsize=(5,6))
+#fig, ax = plt.subplots() #solved by add this line 
+data.boxplot('IZNOSI','KATEGORIJE',rot = 30,figsize=(5,6))
+st.pyplot()
+
+#fig, ax = plt.subplots() #solved by add this line 
 data.boxplot('IZNOSI','RADIONICE',rot = 30,figsize=(5,6))
-plt.show()
+st.pyplot()
 
 sns.set_theme(style="darkgrid")
-sns.countplot(x=data['RADIONICE'], data=data)
-plt.show()
-sns.countplot(x=data['RADIONICE'], hue=data['KATEGORIJE'], data=data)
-plt.show()
+fig, ax = plt.subplots() #solved by add this line 
+ax = sns.countplot(x=data['RADIONICE'], data=data)
+st.pyplot(fig)
+fig, ax = plt.subplots() #solved by add this line 
+ax=sns.countplot(x=data['RADIONICE'], hue=data['KATEGORIJE'], data=data)
+st.pyplot(fig)
 
 workshop=pd.get_dummies(data['RADIONICE'],drop_first=True)
+st.write("Radionice nakon pretvorbe u dummy varijable:")
+st.write(workshop.head())
 #print(workshop.head())
 
 categories=pd.get_dummies(data['KATEGORIJE'],drop_first=True)
+st.write("Kategorije nakon pretvorbe u dummy varijable:")
+st.write(categories.head())
 #print(categories.head())
 
 data=pd.concat([data,workshop,categories],axis=1)
 data=data.drop(['RADIONICE','KATEGORIJE'],axis=1)
+st.write(data.head())
 print(data.head())
+
 
 
 X=data.drop("IZNOSI",axis=1)
@@ -46,9 +68,11 @@ predictions = model.predict(X_test)
 r2 = model.score(X_train, y_train)
 
 print('R^2 = ', r2)
+st.write('R^2 = ', r2)
 
-sns.regplot(x=y_test, y=predictions, ci=68, truncate=False)
-plt.show()
+fig, ax = plt.subplots() #solved by add this line 
+ax=sns.regplot(x=y_test, y=predictions, ci=68, truncate=False)
+st.pyplot(fig)
 
 data = data.iloc[:, 1:-1]
 
@@ -64,12 +88,14 @@ fig, ax = plt.subplots(figsize=(6, 5))
 # Generate a custom diverging colormap
 cmap = sns.diverging_palette(220, 10, as_cmap=True, sep=100)
 
+#fig, ax = plt.subplots() #solved by add this line 
 # Draw the heatmap with the mask and correct aspect ratio
-sns.heatmap(corr, mask=mask, cmap=cmap, vmin=-1, vmax=1, center=0, linewidths=.5)
+ax=sns.heatmap(corr, mask=mask, cmap=cmap, vmin=-1, vmax=1, center=0, linewidths=.5)
+
 
 fig.suptitle('Correlation matrix of features', fontsize=15)
 ax.text(0.77, 0.2, 'Matea ZI', fontsize=13, ha='center', va='center',
          transform=ax.transAxes, color='grey', alpha=0.5)
 
 fig.tight_layout()
-plt.show()
+st.pyplot(fig)
