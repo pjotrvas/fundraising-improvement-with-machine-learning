@@ -17,6 +17,7 @@ st.write("""
 # Fundraising analiza 
 """)
 
+st.write("Pregled podataka:")
 
 data=pd.read_csv('./dataset.csv')
 #print(data.head())
@@ -34,10 +35,12 @@ st.pyplot()
 data.boxplot('IZNOSI','RADIONICE',rot = 30,figsize=(5,6))
 st.pyplot()
 
+st.write("Pregled broja do sada organiziranih radionica:")
 sns.set_theme(style="darkgrid")
 fig, ax = plt.subplots() #solved by add this line 
 ax = sns.countplot(x=data['RADIONICE'], data=data)
 st.pyplot(fig)
+st.write("Pregled kategorija firmi partnera do sada organiziranih radionica:")
 fig, ax = plt.subplots() #solved by add this line 
 ax=sns.countplot(x=data['RADIONICE'], hue=data['KATEGORIJE'], data=data)
 st.pyplot(fig)
@@ -52,6 +55,7 @@ st.write("Kategorije nakon pretvorbe u dummy varijable:")
 st.write(categories.head())
 #print(categories.head())
 
+st.write("Pregled podataka nakon transformacije:")
 data=pd.concat([data,workshop,categories],axis=1)
 data=data.drop(['RADIONICE','KATEGORIJE'],axis=1)
 st.write(data.head())
@@ -69,7 +73,7 @@ r2 = model.score(X_train, y_train)
 
 print('R^2 = ', r2)
 st.write('R^2 = ', r2)
-
+st.write("Pregled rezultata predvidanja modela visestruke linearne regresije:")
 fig, ax = plt.subplots() #solved by add this line 
 ax=sns.regplot(x=y_test, y=predictions, ci=68, truncate=False)
 st.pyplot(fig)
